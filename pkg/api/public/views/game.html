@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Refresh" content="5" />
+    <title>Game</title>
+</head>
+<body>
+<p><a href="/" class="button"> Return back </a></p>
+{{ range .Game }}
+    <div>
+        <p>
+            <b>___________________________ {{ .Minutes }} minutes ______________________________
+                <br> team 1: Attack {{  .First.Attack }}  Score {{ .First.Score }}
+                <br> team 2: Attack {{ .Second.Attack }}  Score {{ .Second.Score }}
+            </b>
+        </p>
+    </div>
+{{else}}<div><strong>Wait Result</strong></div>
+{{end}}
+</body>
+</html>

@@ -8,7 +8,7 @@ import (
 
 func init() {
 	cmd := &cobra.Command{
-		Use:   "serve",
+		Use:   "server",
 		Short: "run the test-NBA web server",
 	}
 	fPort := cmd.Flags().String("host", ":8080", "host the server will listen on")
@@ -19,4 +19,5 @@ func init() {
 		}
 		return app.Run()
 	}
+	Root.AddCommand(cmd)
 }

@@ -1,26 +1,39 @@
 package api
 
 import (
-	"encoding/json"
-	"net"
+	"embed"
+	"fmt"
+	"github.com/GatilovSergey/test-NBA/pkg/nba"
+	"github.com/GatilovSergey/test-NBA/pkg/utils"
+	"html/template"
 	"net/http"
 )
+
+// content holds our static web server content.
+//go:embed public/views
+var content embed.FS
+
+type Todo struct {
+	Game []nba.GameInfoPerMin
+}
 
 func (api *API) NBA(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		if r.RemoteAddr == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			_, _ = w.Write([]byte("can not find ip address"))
-			return
+		utils.PrettyPrint(Todo{nba.Game})
+		t, err := template.ParseFS(content, "public/views/game.html")
+		if err!=nil{
+			fmt.Println(err)
 		}
-		ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+		t.Execute(w,Todo{nba.Game})
 
-		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(struct {
-			Ip string `json:"ip"`
-		}{ip})
+
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+}
+
+func (api *API) StartGame(w http.ResponseWriter, r *http.Request) {
+	go nba.StartGame()
+	http.Redirect(w, r, "/game", 302)
 }
